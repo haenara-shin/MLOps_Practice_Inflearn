@@ -101,6 +101,14 @@
 - (3) 분포 편향 (Distribution skew)
   - 학습 데이터 세트의 분포가 제공 데이터 세트의 분포와 크게 다를때 발생.
   - Ex: 다른 코드 혹은 다른 데이터 소스를 사용하여 학습 데이터 세트를 생성하는 경우, 혹은 학습할 제공 데이터의 '대표적이지 않은' 하위 샘플을 선택하여 샘플링 하는 경우
+  - Add skew comparator for 'payment_type' feature.
+  - `payment_type = tfdv.get_feature(schema, 'payment_type')`
+  - `payment_type.skew_comparator.infinity_norm.threshold = 0.01`
+  - Add drift comparator for 'company' feature.
+  - `company=tfdv.get_feature(schema, 'company')`
+  - `company.drift_comparator.infinity_norm.threshold = 0.001`
+  - `skew_anomalies = tfdv.validate_statistics(train_stats, schema,previous_statistics=eval_stats, serving_statistics=serving_stats)`
+  - `tfdv.display_anomalies(skew_anomalies)`
 
 ### 스키마가 검토되고 선별 된 후 '고정' 상태를 반영하여 파일에 저장
 - `from tensorflow.python.lib.io import file_io`
