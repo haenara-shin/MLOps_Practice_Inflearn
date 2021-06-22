@@ -24,6 +24,8 @@
 
 # mlflow Registry
 - (1) 실습(`Lesson6 - XGBoost Iris`)
-  - 모델 등록: `mlflow server --backend-store-uri sqlite:///sqlite.db --default-artifact-root ~/mlflow`
+  - SQL 필요
+  - 모델 등록: `mlflow server --backend-store-uri sqlite:///sqlite.db --default-artifact-root ~/mlflow` --> 서버 하나 생성
   - `source mlflow_host.sh`
   - `export MLFLOW_TRACKING_URI=http://localhost:5000`
+  - `random_forest.py` 실행
