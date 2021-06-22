@@ -4,6 +4,7 @@
 ## ML Pipeline 
 - 머신러닝 파이프라인은 새로운 학습 데이터를 수집하는 것으로 시작, 새로 학습된 모델이 어떻게 작동하고 있는지에 대한 피드백(성능 메트릭, 사용자 피드백 등)을 받는 것이 하나의 사이클임.
 - 여러 deployment 방법이 있는데, 
+  - Cloud(AWS, GCP, Azure) vs. Edge/Browser
   - MLEP 에서는 `fastAPI` 사용해서 간단하게 처리함. (`Deployment`-`server.ipynb`)
   - Inflearn 에서는 `bentoML` 사용
 - ![스크린샷 2021-06-22 오전 10 26 24](https://user-images.githubusercontent.com/58493928/122972217-c1f18580-d344-11eb-895c-63e718030805.png)
@@ -26,10 +27,11 @@
       - [`A/B testing`](https://brunch.co.kr/@bumgeunsong/17): [`Split testing` or `bucket testing`](https://www.optimizely.com/optimization-glossary/ab-testing/). A버전과 B버전을 무작위로 유저들에게 보여주고 어떤 것이 나은지 실험하는 방법. 각 버전을 본 유저의 행동 데이터를 통계적으로 분석할 수 있음. `가설을 직관이 아니라 데이터로 증명`할 수 있다. (ex: 디자인에 대한 사람들의 선호도) 하지만, 정답을 유추해내는 하나의 단서일 뿐임. `"산을 잘 올라가고 있는지는 말해주지만, 어느 산에 올라가야 하는지 말해주지 않음."`
   2. `Model feedback`: 새로 배포된 모델의 효과와 성능을 측정. 피드백 루프를 반복한다. `Monitor & Maintain system`
 
-## Deployment (`Monitor & Maintain system`) 에서 생길 수 있는 이슈: Drift & Skew
+## Deployment (`Monitor & Maintain system`) 에서 생길 수 있는 이슈: (Drift & Skew - Monitor and maintain system) & (Software engineering issues - deploy in production)
+- `First deployment` vs. `Maintenance`
 ### Drift
-- `Data drift`: 모델 성능 저하를 초래하는 입력 데이터의 변경(`x`) (갑작스런 변화. `Suddenly changed`)
-- `Concept drift`: 측정하는 가치가 현저하게 변화 (`x -> y`) (`Gradually change`)
+- `Data drift`: 모델 성능 저하를 초래하는 입력 데이터의 변경(`x`가 변화) (갑작스런 변화. `Suddenly changed`)
+- `Concept drift`: 측정하는 가치가 현저하게 변화 (`x -> y`가 변화) (`Gradually change`)
 ### Skew (편향, 왜곡)
 - `스키마 편향` (`Schema skew`)
   - 학습 및 서빙 데이터가 동일한 스키마를 따르지 않을때 발생. 
@@ -39,3 +41,9 @@
 - `분포 편향` (`Distribution skew`)
   - 학습 데이터 세트의 분포가 제공 데이터 세트의 분포와 크게 다를때 발생.
   - Ex: 다른 코드 혹은 다른 데이터 소스를 사용하여 학습 데이터 세트를 생성하는 경우, 혹은 학습할 제공 데이터의 '대표적이지 않은' 하위 샘플을 선택하여 샘플링 하는 경우
+### Software engineering issues
+- (1) `Realtime` or `Batch` prediction?
+- (2) The prediction services run on `Cloud` vs. `Edge`(internet connection 필요 없거나 임베디드 장치)/`Browser`?
+- (3) How many `compute resources` (CPU/GPU/memory) do you have?
+- (4) `Latency`, `throughput`(QPS - queries per second): run on `Edge` 에서 특히 중요
+- (5) `Security and privacy`
