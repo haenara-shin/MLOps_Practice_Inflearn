@@ -1,0 +1,103 @@
+# Docker
+- 일관된 환경 보장
+- 소프트웨어를 인프라와 분리 가능
+- 컨테이너
+- 클라이언트-서버 아키텍쳐 사용
+- 클라이언트(docker. 명령어)-데몬(dockerd. 도커 객체 관리. 도커 호스트, 컨테이너, 이미지)-레지스트리(도커 이미지 저장. Docker hub)
+  - 도커 이미지: 도커 컨테이너를 만들기 위한 지침. 읽기 전용 템플릿. (일종의 클래스)
+  - 도커 컨테이너: 이미지의 실행 가능한 인스턴스. (일종의 객체, 인스턴스)
+- 도커 설치 후,
+- 1. `docker run -d -p 80:80 docker/getting-started`
+- 2. `localhost:80` 
+- 3. 도커 파일 하나 만들기(`Our application`-`Building the App's Container Image`-복사)
+  - `docker` 폴더 생성 후 `Dockerfile` 파일 생성
+  - 복사 한 내용 붙여 넣기
+  - `docker build -t getting-started .`
+  - `docker run -dp 3000:3000 getting-started`
+- Dockerfile: 사용자가 이미지를 조합하기 위해 명령줄에서 호출 할 수 있는 모든 명령이 포함된 텍스트 문서
+  - `docker build -f /path/to/a/Dockerfile .`
+- 빌드가 성공하면 새 이미지를 저장할 저장소와 태그를 지정할 수 있음.
+  - `docker build -t {shykes/myapp} .` 
+  - 빌드 후 이미지를 여러 저장소에 태그 하려면 -t 다음 build 명령을 실행할때 여러 매개 변수를 추가하면 됨. `docker build -t chrisai/myapp:1.0.2 -t chrisai/myapp:latest .`
+- Docker 데몬은 명령을 실행하기 전에 Dockerfile 예비 유효성 검사를 수행. 구문이 잘못된 경우 오류 반환
+  - `docker build -t test/myapp .` --> 오류 뱉음.
+- 명령어는 대소문자를 구분하지 않음. 그러나 인수와 구별하기 위해 대문자로 표기하는게 보통
+  - `RUN echo 'we are running some # of cool things'`
+- Dockerfile 순서대로 명령 실행(`FROM` 명령으로 시작). CMD 명령은 3가지 형태가 있음.
+  - 1. `CMD ["executable","param1","param2"]` (exec 형식, 선호하는 형식)
+  - 2. `CMD ["param1","param2"]` (ENTRYPOINT의 기본 매개 변수로 )
+  - 3. `CMD command param1 param2` (쉘 형태)
+  - 둘 이상의 CMD 나열하면 마지막 CMD 항목만 적용됨.
+    - `FROM ubuntu` 
+    - `CMD echo "This is a test." | wc -`
+- 주석 줄은 제거 되니까 신경 안써도 됨.
+- `LABEL` 명령: 이미지에 메타 데이터를 추가함. key-value pair. LABEL 값 내에 공백을 포함하려면 명령줄 구문과 같이 따옴표나 백슬래시 사용함.
+  - `LABEL <key>=<value> <key>=<value> <key>=<value> ...`
+  - `LABEL "com.example.vendor"="ACME Incorporated"`
+  - `LABEL com.example.label-with-value="foo"`
+  - `LABEL version="1.0"`
+  - `LABEL description="This text illustrates \ that label-values can span multiple lines."`
+- 이미지의 LABEL을 보려면 `docker image inspect` 명령어 사용. `-format` 옵션을 사용해서 레이블만 표시할 수 있음
+  - `docker image inspect --format='' myimage`
+- 그 외 `EXPOSE`(컨테이너가 런타임에 지정된 네트워크 포트에서 수신 대기한다는 것을 docker에 알림), `ENV` 등이 있음.
+
+# Kubernetes
+- 사용할 브라우저는 무조건 크롬으로 한다. Safari 사용하면 접속 안됨.
+- 기존: 서비스 갯수에 따른 인프라 관리 어려움, 또는 이용자 수 증가에 따른 병목현상 발생 등에 대처가 어려움.
+- 수평적(분산 처리), 수직적(용량 증설) 서버 auto scaling 유연하게 할 수 있음.
+- `homebrew` 설치 (/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.s)h")
+- DOCKER 에서 Kubernetes enable 하고, 자원을 충분히 할당해 준다.
+- `kubectl get po -A` : 쿠버네티스 클러스터 상태 확인
+- 쿠버네티스 대시보드 설치
+  - [링크](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/)
+  - `kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.2.0/aio/deploy/recommended.yaml`
+  - 대시보드 권한 설정 (`creating a sample user` 클릭)
+    - Creating a Service Account
+      - `cat <<EOF | kubectl apply -f -`
+      - `apiVersion: v1`
+      - `kind: ServiceAccount`
+      - `metadata:`
+        - `name: admin-user`
+        - `namespace: kubernetes-dashboard`
+      - `EOF`
+      - 결과 확인: `serviceaccount/admin-user created`
+    - Creating a ClusterRoleBinding
+      - `cat <<EOF | kubectl apply -f -`
+        - `apiVersion: rbac.authorization.k8s.io/v1`
+        - `kind: ClusterRoleBinding`
+        - `metadata:`
+          - `name: admin-user`
+        - `roleRef:`
+          - `apiGroup: rbac.authorization.k8s.io`
+          - `kind: ClusterRole`
+          - `name: cluster-admin`
+        - `subjects:`
+          - `- kind: ServiceAccount`
+          - `name: admin-user`
+          - `namespace: kubernetes-dashboard`
+      - `EOF`
+      - 결과 확인: `clusterrolebinding.rbac.authorization.k8s.io/admin-user created`
+    - 토큰 받아오기
+      - `kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user -o jsonpath="{.secrets[0].name}") -o go-template="{{.data.token | base64decode}}"`
+    - 쿠버네티스 대시보드 접근을 위해 프록시 띄우기
+      - `kubectl proxy`
+      - `http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login`
+      - 토큰 입력 (Google Chrome 사용한다, 꼭!!!)
+      - 프록시 종료시킴: `pkill -9 -f "kubectl proxy"`
+
+# 쿠버네티스 앱 배포
+- 예제 파일 담긴 폴더 옮겨옴
+- Dockerfile 수정: maintainer
+- pod-1.yml 수정: 아이디/작업 #내 아이디는 hac#####임. 
+- `docker build -t 아이디/작업 .`
+- `docker login`
+- `docker push 아이디/작업:latest`
+- [도커 허브](https://hub.docker.com/repository/docker/hackersz/minflask)에서 확인
+- POD 생성하기
+  - `pod-1.yml` 파일 내용을 복사한 뒤, 쿠버네티스 대시보드 - 우측상단의 + 버튼 클릭 후 내용 붙여넣고 업로드
+- 서비스 생성
+  - `svc-1.yml` 파일 내용을 복사한 뒤, 쿠버네티스 대시보드 - 우측 상단의 + 버튼 클릭 후 내용 붙여넣고 업로드
+- 로컬호스트에서 쿠버네티스 서비스 포트 포워딩 해주기
+  - 서비스에 있는 8000번에.
+  - `kubectl port-forward service/hello-svc 8200:8200`
+- 브라우저에 localhost:8200 입력하면 `Hello, World!` 출력된 화면 생성
