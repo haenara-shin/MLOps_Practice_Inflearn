@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/Haenara.SHIN/Documents/2%20Study%20%28Python%2C%20Math%29/4%20Inflearn/12-MLOps/MLOps_Practice_Inflearn/6_Model%20Registry%20-%20mlflow/track1/mlruns/0/754af5942b924f758c2ab9fced5943a7/artifacts
+end_time: 1624338532444
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+name: ''
+run_id: 754af5942b924f758c2ab9fced5943a7
+run_uuid: 754af5942b924f758c2ab9fced5943a7
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1624338532387
+status: 3
+tags: []
+user_id: Haenara.SHIN
