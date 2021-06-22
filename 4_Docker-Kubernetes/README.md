@@ -83,8 +83,9 @@
       - `kubectl proxy`
       - `http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login`
       - 토큰 입력 (Google Chrome 사용한다, 꼭!!!)
+      - 프록시 종료시킴: `pkill -9 -f "kubectl proxy"`
 
-# 배포
+# 쿠버네티스 앱 배포
 - 예제 파일 담긴 폴더 옮겨옴
 - Dockerfile 수정: maintainer
 - pod-1.yml 수정: 아이디/작업 #내 아이디는 hac#####임. 
@@ -92,6 +93,11 @@
 - `docker login`
 - `docker push 아이디/작업:latest`
 - [도커 허브](https://hub.docker.com/repository/docker/hackersz/minflask)에서 확인
-- 
-
-
+- POD 생성하기
+  - `pod-1.yml` 파일 내용을 복사한 뒤, 쿠버네티스 대시보드 - 우측상단의 + 버튼 클릭 후 내용 붙여넣고 업로드
+- 서비스 생성
+  - `svc-1.yml` 파일 내용을 복사한 뒤, 쿠버네티스 대시보드 - 우측 상단의 + 버튼 클릭 후 내용 붙여넣고 업로드
+- 로컬호스트에서 쿠버네티스 서비스 포트 포워딩 해주기
+  - 서비스에 있는 8000번에.
+  - `kubectl port-forward service/hello-svc 8200:8200`
+- 브라우저에 localhost:8200 입력하면 `Hello, World!` 출력된 화면 생성
