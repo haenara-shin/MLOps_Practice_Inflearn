@@ -1,0 +1,22 @@
+artifact_path: iris_rf
+flavors:
+  python_function:
+    env: conda.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    python_version: 3.7.3
+  sklearn:
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 0.21.3
+run_id: ea596a3f11734fed97ba9793fff8325d
+saved_input_example_info:
+  artifact_path: input_example.json
+  pandas_orient: split
+  type: dataframe
+signature:
+  inputs: '[{"name": "sepal length (cm)", "type": "double"}, {"name": "sepal width
+    (cm)", "type": "double"}, {"name": "petal length (cm)", "type": "double"}, {"name":
+    "petal width (cm)", "type": "double"}]'
+  outputs: '[{"type": "long"}]'
+utc_time_created: '2021-06-22 05:20:12.755974'
